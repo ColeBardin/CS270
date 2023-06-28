@@ -1,4 +1,4 @@
-; Type your name after the colon:
+; Type your name after the colon: Cole Bardin
 ; Note: please don't forget to put your full name in line1 after the colon -- it is necessary for the autograder (and worth 4pts)!
 
 #lang racket
@@ -119,11 +119,12 @@ Hint: try to solve this "Racket style" in which the output of an if is either + 
   (if (equal? n 1)
       ; Stop once 1 is reached
       1
-      (
+      (    ; Determine which function should be used (+ or -)
            ; Use + for even alts, - for odd alts
           (if (equal? (remainder n 2) 0)
               -
-              +)
+              +
+          )
           ; Cube n and multiply it by altcube of n-1
           (altcubes (- n 1)) (* n n n))
   )
@@ -157,7 +158,7 @@ Hint: try to solve this "Racket style" in which the output of an if is either + 
   ; Stop once reached 1
   (if (equal? n 1)
       1
-      ; Find nth odd number and multiply it by oddfact of n-1
+      ; Find nth odd number ((2*n)-1) and multiply it by oddfact of n-1
       (* (- (* 2 n) 1) (oddfact (- n 1)))
   )
 ); replace this null here with the lines of your code
@@ -300,6 +301,7 @@ you should fix that error by adjusting the order of your cond cases.
 |#
 
 (define (prime? n)
+  ; Start recusive function for n with divider of 2
   (primeDiv n 2)
   ); replace this null here with the lines of your code
 
@@ -307,12 +309,15 @@ you should fix that error by adjusting the order of your cond cases.
 
 (define (primeDiv n i)
   (cond
-    ; If n is less than 2
+    ; If n is less than 2, (1, 0, -1...), not primr
     [(<= n 1) #f]
     ; If i is a factor of n
     [(equal? (remainder n i) 0)
+       ; If i = n, divider has reached n
        (if (equal? i n)
+           ; No factors found
            #t
+           ; Factor found!
            #f
        )
     ]
@@ -323,7 +328,7 @@ you should fix that error by adjusting the order of your cond cases.
            #t
            ; if i*i <= n, i is still valid, keep searching
            (primeDiv n (+ i 1))
-        )
+       )
     ]
   )
 ); helper function checks if i is a factor of n and if i * i < n. Returns #f or #t when a conclusion can be made
