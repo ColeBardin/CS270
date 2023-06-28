@@ -363,7 +363,9 @@ you should fix that error by adjusting the order of your cond cases.
 
 (define (sum_digits n)
   (if (equal? n 0)
+      ; stop once 0 has been reached
       0
+      ; else, add its one's digit and find the sumdigits of n/10
       (+ (remainder n 10) (sum_digits (quotient n 10)))
   )
 ); replace this null here with the lines of your code
