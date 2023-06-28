@@ -47,7 +47,13 @@ Example: when n=4, the output would be 30 because of 1 + 4 + 9 + 16
 |#
 
 (define (sumsqs n)
-  (if (equal? 1 n) 1 (+ (* n n) (sumsqs (- n 1))))); replace this null here with the lines of your code
+  (if (equal? 1 n)
+      ; Stop once 1 has been reached
+      1
+      ; otherwise, sum n*n with the sumsquares of n-1
+      (+ (* n n) (sumsqs (- n 1)))
+  )
+); replace this null here with the lines of your code
 
 
 ;Test Bed
@@ -73,7 +79,13 @@ Example: when n=4, the output would be 30 because of 1 + 4 + 9 + 16
 ;Example: when n=4, the output would be 16 because of 1 + 3 + 5 + 7
 
 (define (sumodds n)
-  (if (equal? 1 n) 1 (+ (sumodds (- n 1)) (- (* 2 n) 1)))); replace this null here with the lines of your code.
+  (if (equal? 1 n)
+      ; Stop once 1 has been reached
+      1
+      ; else sum the nth odd number with the sumodds of n-1
+      (+ (sumodds (- n 1)) (- (* 2 n) 1))
+  )
+); replace this null here with the lines of your code.
 
 
 ;Test Bed
@@ -104,7 +116,18 @@ Hint: try to solve this "Racket style" in which the output of an if is either + 
 |#
 
 (define (altcubes n)
-  (if (equal? n 1) 1 ((if (equal? (remainder n 2) 0) - +) (altcubes (- n 1)) (* n n n)))); replace this null here with the lines of your code
+  (if (equal? n 1)
+      ; Stop once 1 is reached
+      1
+      (
+           ; Use + for even alts, - for odd alts
+          (if (equal? (remainder n 2) 0)
+              -
+              +)
+          ; Cube n and multiply it by altcube of n-1
+          (altcubes (- n 1)) (* n n n))
+  )
+); replace this null here with the lines of your code
 
 ;end
 
@@ -131,7 +154,13 @@ Hint: try to solve this "Racket style" in which the output of an if is either + 
 ;Hint: be careful, the specs are NOT saying that n needs to be odd
 
 (define (oddfact n)
-  (if (>= n 0) (if (equal? (remainder n 2) 0) (oddfact (- n 1)) (* n (oddfact (- n 2)))) 1)); replace this null here with the lines of your code
+  ; Stop once reached 1
+  (if (equal? n 1)
+      1
+      ; Find nth odd number and multiply it by oddfact of n-1
+      (* (- (* 2 n) 1) (oddfact (- n 1)))
+  )
+); replace this null here with the lines of your code
 
 ;end
 
@@ -158,7 +187,14 @@ Hint: try to solve this "Racket style" in which the output of an if is either + 
 ;Hint: the ideal solution does not require a helper function.
 
 (define (logfloor n)
-  null); replace this null here with the lines of your code
+  ; if n is greater than 1
+  (if (> n 1)
+      ; if so, increase counter and check n/2
+      (+ 1 (logfloor (quotient n 2)))
+      ; hit dead end, found power of 2
+      0
+  )
+); replace this null here with the lines of your code
 
 ;end
 
@@ -192,7 +228,27 @@ Hint: the program only needs to give the total ways. It should not generate thos
 |#
 
 (define (stepways n)
-  null); replace this null here with the lines of your code
+  ; if a big step fits
+  (if (>= n 3)
+      ; if so, check stepways if big, medium or little step was made
+      (+ (stepways (- n 3)) (stepways (- n 2)) (stepways (- n 1)))
+      ; else check if a medium step fits
+      (if (>= n 2)
+          ; if so, check stepways if medium or little step was made
+          (+ (stepways (- n 2)) (stepways (- n 1)))
+          ; else check if a small step fits
+          (if (>= n 1)
+              ; if so, check stepways if little step was made
+              (stepways (- n 1))
+              ; else check if previous step went over total step count
+              (if (equal? n 0)
+                  1 ; if so, this combination is valid, count it
+                  0 ; else, this combination is not valid, don't count it
+              )
+          )
+      )
+  )
+); replace this null here with the lines of your code
 
 ;end
 
@@ -244,10 +300,33 @@ you should fix that error by adjusting the order of your cond cases.
 |#
 
 (define (prime? n)
-  null); replace this null here with the lines of your code
+  (primeDiv n 2)
+  ); replace this null here with the lines of your code
 
 ;end
 
+(define (primeDiv n i)
+  (cond
+    ; If n is less than 2
+    [(<= n 1) #f]
+    ; If i is a factor of n
+    [(equal? (remainder n i) 0)
+       (if (equal? i n)
+           #t
+           #f
+       )
+    ]
+    ; i is not factor of n, check if index
+    [else
+       (if (> (* i i) n)
+           ; if i*i > n, no factors found before root(n), not prime
+           #t
+           ; if i*i <= n, i is still valid, keep searching
+           (primeDiv n (+ i 1))
+        )
+    ]
+  )
+); helper function checks if i is a factor of n and if i * i < n. Returns #f or #t when a conclusion can be made
 
 ;Here are some tests to see if your function works.
 (display "Question 7 Tests\n")
@@ -283,7 +362,11 @@ you should fix that error by adjusting the order of your cond cases.
 |#
 
 (define (sum_digits n)
-  null); replace this null here with the lines of your code
+  (if (equal? n 0)
+      0
+      (+ (remainder n 10) (sum_digits (quotient n 10)))
+  )
+); replace this null here with the lines of your code
 
 ;end
 
