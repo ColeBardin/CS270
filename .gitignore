@@ -1,2 +1,4 @@
 #autosave files
 *~
+#backup files
+*.bak
