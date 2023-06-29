@@ -289,27 +289,11 @@ you should fix that error by adjusting the order of your cond cases.
 
 (define (primeDiv n i)
   (cond
-    ; If n is less than 2, (1, 0, -1...), not prime
-    [(<= n 1) #f]
-    ; If i is a factor of n
-    [(equal? (remainder n i) 0)
-       ; If i = n, divider has reached n
-       (if (equal? i n)
-           ; No factors found
-           #t
-           ; Factor found!
-           #f
-       )
-    ]
-    ; i is not factor of n, check if index
-    [else
-       (if (> (* i i) n)
-           ; if i*i > n, no factors found before root(n), not prime
-           #t
-           ; if i*i <= n, i is still valid, keep searching
-           (primeDiv n (+ i 1))
-       )
-    ]
+    [(<= n 1) #f] ; If n is less than 2, (1, 0, -1...), not prime
+    [(equal? i n) #t] ; if i has reached n, prime
+    [(equal? (remainder n i) 0) #f] ; if i is a factor of n, not prime
+    [(> (* i i) n) #t] ; if i*i > n, no factors found before root(n), prime   
+    [else (primeDiv n (+ i 1))] ; no reason to stop, check i+1
   )
 ); helper function checks if i is a factor of n and if i * i < n. Returns #f or #t when a conclusion can be made
 
