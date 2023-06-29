@@ -48,10 +48,8 @@ Example: when n=4, the output would be 30 because of 1 + 4 + 9 + 16
 
 (define (sumsqs n)
   (if (equal? 1 n)
-      ; Stop once 1 has been reached
-      1
-      ; otherwise, sum n*n with the sumsquares of n-1
-      (+ (* n n) (sumsqs (- n 1)))
+      1 ; Stop once 1 has been reached
+      (+ (* n n) (sumsqs (- n 1))) ; otherwise, sum n*n with the sumsquares of n-1
   )
 ); replace this null here with the lines of your code
 
@@ -80,10 +78,8 @@ Example: when n=4, the output would be 30 because of 1 + 4 + 9 + 16
 
 (define (sumodds n)
   (if (equal? 1 n)
-      ; Stop once 1 has been reached
-      1
-      ; else sum the nth odd number with the sumodds of n-1
-      (+ (sumodds (- n 1)) (- (* 2 n) 1))
+      1 ; Stop once 1 has been reached
+      (+ (sumodds (- n 1)) (- (* 2 n) 1)) ; else sum the nth odd number with the sumodds of n-1
   )
 ); replace this null here with the lines of your code.
 
@@ -150,9 +146,8 @@ Hint: try to solve this "Racket style" in which the output of an if is either + 
 (define (oddfact n)
   ; Stop once reached 1
   (if (equal? n 1)
-      1
-      ; Find nth odd number ((2*n)-1) and multiply it by oddfact of n-1
-      (* (- (* 2 n) 1) (oddfact (- n 1)))
+      1 ; stop once 1 has been reached
+      (* (- (* 2 n) 1) (oddfact (- n 1))) ; Find nth odd number ((2*n)-1) and multiply it by oddfact of n-1
   )
 ); replace this null here with the lines of your code
 
@@ -181,12 +176,10 @@ Hint: try to solve this "Racket style" in which the output of an if is either + 
 ;Hint: the ideal solution does not require a helper function.
 
 (define (logfloor n)
-  ; if n is greater than 1
+  ; check if n is greater than 1
   (if (> n 1)
-      ; if so, increase counter and check n/2
-      (+ 1 (logfloor (quotient n 2)))
-      ; hit dead end, found power of 2
-      0
+      (+ 1 (logfloor (quotient n 2))) ; if so, increase counter and check n/2
+      0 ; hit dead end, found power of 2
   )
 ); replace this null here with the lines of your code
 
@@ -332,10 +325,8 @@ you should fix that error by adjusting the order of your cond cases.
 
 (define (sum_digits n)
   (if (equal? n 0)
-      ; stop once 0 has been reached
-      0
-      ; else, add its one's digit and find the sumdigits of n/10
-      (+ (remainder n 10) (sum_digits (quotient n 10)))
+      0 ; stop once 0 has been reached
+      (+ (remainder n 10) (sum_digits (quotient n 10))) ; else, add its one's digit and find the sumdigits of n/10
   )
 ); replace this null here with the lines of your code
 
