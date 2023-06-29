@@ -116,17 +116,10 @@ Hint: try to solve this "Racket style" in which the output of an if is either + 
 |#
 
 (define (altcubes n)
-  (if (equal? n 1)
-      ; Stop once 1 is reached
-      1
-      (    ; Determine which function should be used (+ or -)
-           ; Use + for even alts, - for odd alts
-          (if (equal? (remainder n 2) 0)
-              -
-              +
-          )
-          ; Cube n and multiply it by altcube of n-1
-          (altcubes (- n 1)) (* n n n))
+  (cond
+    [(equal? n 1) 1] ; stop recursion when n=1
+    [(equal? (remainder n 2) 0) (- (altcubes (- n 1)) (* n n n))] ; if n is even, SUBTRACT n^3 and calculate altcubes of n-1
+    [else (+ (altcubes (- n 1)) (* n n n))] ; if n is odd, ADD n^3 and calculate altcubes of n-1
   )
 ); replace this null here with the lines of your code
 
@@ -229,25 +222,12 @@ Hint: the program only needs to give the total ways. It should not generate thos
 |#
 
 (define (stepways n)
-  ; if a big step fits
-  (if (>= n 3)
-      ; if so, check stepways if big, medium or little step was made
-      (+ (stepways (- n 3)) (stepways (- n 2)) (stepways (- n 1)))
-      ; else check if a medium step fits
-      (if (>= n 2)
-          ; if so, check stepways if medium or little step was made
-          (+ (stepways (- n 2)) (stepways (- n 1)))
-          ; else check if a small step fits
-          (if (>= n 1)
-              ; if so, check stepways if little step was made
-              (stepways (- n 1))
-              ; else check if previous step went over total step count
-              (if (equal? n 0)
-                  1 ; if so, this combination is valid, count it
-                  0 ; else, this combination is not valid, don't count it
-              )
-          )
-      )
+  (cond
+    [(>= n 3) (+ (stepways (- n 3)) (stepways (- n 2)) (stepways (- n 1)))] ; if a big step fits, try taking b,m,s steps
+    [(>= n 2) (+ (stepways (- n 2)) (stepways (- n 1)))] ; if a medium step fits, try taking m,s steps
+    [(>= n 1) (stepways (- n 1))] ; if small step fits, try s step
+    [(equal? n 0) 1] ; if reached zero, this is a valid combination
+    [else 0] ; if passed zero, then this is an invalid combination
   )
 ); replace this null here with the lines of your code
 
@@ -309,7 +289,7 @@ you should fix that error by adjusting the order of your cond cases.
 
 (define (primeDiv n i)
   (cond
-    ; If n is less than 2, (1, 0, -1...), not primr
+    ; If n is less than 2, (1, 0, -1...), not prime
     [(<= n 1) #f]
     ; If i is a factor of n
     [(equal? (remainder n i) 0)
