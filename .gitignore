@@ -1,4 +1,8 @@
 #autosave files
 *~
+
 #backup files
 *.bak
+
+#Mac shit
+*.DS_Store
