@@ -45,7 +45,12 @@ remainder etc), then you taking a wrong (and very inefficient) approach to that 
 ; Input:  L is a list of symbols (possibly empty)
 ; Output: (all_q L) a boolean value which is false if and only if L contains a symbol which isn't q
 (define (all_q? L)
-  null); replace this null here with the lines of your code
+  (cond
+    [(null? L) #t] ; If reached a Null list return true
+    [(equal? (first L) 'q) (all_q? (rest L))] ; If fist item is q, check rest of list
+    [else #f] ; If first item is not q, return false
+    )
+); replace this null here with the lines of your code
 
 (define-test-suite test_all_q
   (test-equal? "" (all_q? '(q)) #t)
@@ -66,7 +71,12 @@ remainder etc), then you taking a wrong (and very inefficient) approach to that 
 ; Input:  L is a list of symbols (possibly empty)
 ; Output: (at_least_one_q L) is a boolean which is true if and only if L contains a symbol q.
 (define (at_least_one_q? L)
-  null); replace this null here with the lines of your code
+  (cond
+    [(null? L) #f] ; If reached an empty list, no q, return false
+    [(equal? (first L) 'q) #t] ; return true on one q found
+    [else (at_leat_one_q? (rest L))] ; if first item is not q, check rest of list
+  )
+); replace this null here with the lines of your code
 
 (define-test-suite test_at_least_one_q
   (test-equal? "" (at_least_one_q? '(q)) #t)
