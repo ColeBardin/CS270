@@ -1,4 +1,4 @@
-;type your name after the colon:
+;type your name after the colon: Cole Bardin
 #lang racket
 
 ;The following two lines are required to test the code.
