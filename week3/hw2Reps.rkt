@@ -74,7 +74,7 @@ remainder etc), then you taking a wrong (and very inefficient) approach to that 
   (cond
     [(null? L) #f] ; If reached an empty list, no q, return false
     [(equal? (first L) 'q) #t] ; return true on one q found
-    [else (at_leat_one_q? (rest L))] ; if first item is not q, check rest of list
+    [else (at_least_one_q? (rest L))] ; if first item is not q, check rest of list
   )
 ); replace this null here with the lines of your code
 
@@ -98,7 +98,13 @@ remainder etc), then you taking a wrong (and very inefficient) approach to that 
 ; Hint: it is helpful to call one of the functions you already wrote for this hw,
 ; since attempting to count up the number of q's is an extremely inefficient approach.
 (define (exactly_one_q? L)
-  null); replace this null here with the lines of your code
+  (cond
+    [(not (at_least_one_q? L)) #f] ; if there are no qs in it, return false
+    [(null? L) #t] ; if reached empty list, return true
+    [(equal? (first L) 'q) (not (at_least_one_q? (rest L)))] ; if first item is q, check if there are no more q's
+    [else (exactly_one_q? (rest L))] ; if first item is not a q, check rest of list
+  )
+); replace this null here with the lines of your code
 
 (define-test-suite test_exactly_one_q
   (test-equal? "" (exactly_one_q? '(a b)) #f)
@@ -124,7 +130,13 @@ remainder etc), then you taking a wrong (and very inefficient) approach to that 
 ; Hint: if you are counting the total number of q's, then you are not going about it in a good way.
 ;       it is inefficient to do any arithmetic (adding, remaindering) in your implementation
 (define (odd_amt_q? L)
-  null); replace this null here with the lines of your code
+  (cond
+    ; use XOR to toggle boolean output at each q encountered
+    [(null? L) #f] ; if reached an empty list, return false
+    [(equal? (first L) 'q) (xor #t (odd_amt_q? (rest L)))] ; if first item is a q, toggle return value
+    [else (xor #f (odd_amt_q? (rest L)))] ; if not a q, don't toggle the output state
+  )
+); replace this null here with the lines of your code
 
 (define-test-suite test_odd_amt_q
   (test-equal? "" (odd_amt_q? '(q)) #t)
@@ -147,7 +159,8 @@ remainder etc), then you taking a wrong (and very inefficient) approach to that 
 ; Input:  L is a list of symbols (possibly empty).
 ; Output: (odd_amt_q_nonrec L) is true if and only if the amount of q's in L is odd.
 (define (odd_amt_q_nonrec L)
-  null); replace this null here with the lines of your code
+  (foldr (lambda (v l) (xor (equal? v 'q) l)) #f L) ; apply xor toggling with foldr to each element if it is a q to track the oddness of q's
+); replace this null here with the lines of your code
 
 (define-test-suite test_odd_amt_q_v2
   (test-equal? "" (odd_amt_q_nonrec '(q)) #t)
@@ -160,7 +173,7 @@ remainder etc), then you taking a wrong (and very inefficient) approach to that 
   (test-equal? "" (odd_amt_q_nonrec '(q q q)) #t)
   (test-equal? "" (odd_amt_q_nonrec '(q x q)) #f)
   (test-equal? "" (odd_amt_q_nonrec '(q q q q)) #f))
-(display "Question 15 odd_amt_q_nonrec (10 points)\n")
+(display "Question 5 odd_amt_q_nonrec (10 points)\n")
 (define q5_score (- 10 (run-tests test_odd_amt_q_v2 'verbose)))
 
 #| PART TWO: PNUMS
@@ -256,14 +269,24 @@ lastly, when N is the peano number representing n>0, then (pred N) is the peano 
 ; Output: (sub M N) is the pnum representing m-n if m >= n and zero otherwise
 ; Example: (sub five three) would be two, i.e. (succ (succ pzero)), since 5 -3 = 2
 (define (sub M N)
-  null); replace this null here with the lines of your code
+  (cond
+    [(pzero? N) M] ; if N has reached zero, return M value
+    [(pzero? M) zero] ; if M has reached zero, return zero for failure
+    [else (sub (pred M) (pred N))] ; decrement each number and recursively call sub
+    )
+  ); replace this null here with the lines of your code
 
 ; Question 7: Division of Peano numbers
 ; Input: ; Input: M, N are pnums representing the integers m,n where n > 0
 ; Output: the pnum representing the quotient of m divided by n (recall that quotient drops all fractions)
 ; Example: (div seven three) would be two, i.e. (succ (succ pzero)), since (quotient 7 3) is 2
 (define (div M N)
-  null); replace this null here with the lines of your code
+  (cond
+    [(equal? M N) one] ; If M is equal to N, return pnum of one
+    [(pzero? (sub M N)) zero] ; if M is less than N, return pnum of zero
+    [else (plus one (div (sub M N) N))] ; if not, subtract N from N and increment count
+  )
+); replace this null here with the lines of your code
 
 ;Question 8: Remainder of Peano numbers
 ; Input: M, N are pnums representing the integers m,n where n > 0
@@ -271,7 +294,12 @@ lastly, when N is the peano number representing n>0, then (pred N) is the peano 
 ; Example: (rem seven three) would be one, i.e. (succ pzero), since (remainder 7 3) is 1.
 ; Requirement: your answer *must* be recursive to get credit since that is more efficient that calculating remainder = m - n*(quotient m n)
 (define (rem M N)
-  null); replace this null here with the lines of your code
+  (cond
+    [(equal? M N) zero] ; If M is equal to N, return pnum of zero
+    [(pzero? (sub M N)) M] ; if M is less than N, return pnum of M
+    [else (rem (sub M N) N)] ; if not, subtract N from N check for remainder
+  )
+); replace this null here with the lines of your code
 
 (display "Question 6 - Subtraction\n")
 (define-test-suite peano-subtract
@@ -386,7 +414,8 @@ You should make sure you understand them and how they work; feel free to use any
 ; Requirements: be sure to use the functions provided for you in this homework (double, double? etc).
 ; Done correctly, there should be five cases. to be efficient, every recursive call should be of the form (dubplus (op X) (op Y))
 (define (dubplus X Y)
-    null); replace this null here with the lines of your code
+  
+); replace this null here with the lines of your code
 
 (display "Question 9 - DubNum Plus\n")
 (define-test-suite bin-plus-test
