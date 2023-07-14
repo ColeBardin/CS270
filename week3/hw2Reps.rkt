@@ -284,7 +284,7 @@ lastly, when N is the peano number representing n>0, then (pred N) is the peano 
   (cond
     [(equal? M N) one] ; If M is equal to N, return pnum of one
     [(pzero? (sub M N)) zero] ; if M is less than N, return pnum of zero
-    [else (plus one (div (sub M N) N))] ; if not, subtract N from N and increment count
+    [else (succ (div (sub M N) N))] ; if not, subtract N from N and increment count
   )
 ); replace this null here with the lines of your code
 
@@ -419,7 +419,7 @@ You should make sure you understand them and how they work; feel free to use any
     [(dubzero? Y) X] ; if Y is zero, return X
     [(and (double? X) (double? Y)) (double (dubplus (op X) (op Y)))] ; if X and Y both start with D, add their operands and double it
     [(or (double? Y) (double? X)) (inc (double (dubplus (op X) (op Y))))] ; if X xor Y starts with D, add their operands, double it, and add 1
-    [else (inc (inc (double (dubplus (op X) (op Y)))))] ; else, both X and Y are DP1, add operands, double it, and add 2
+    [else (dubplus (double (dubplus (op X) (op Y))) dubtwo)] ; else, both X and Y are DP1, add operands, double it, and add 2
     )
 ); replace this null here with the lines of your code
 
@@ -455,7 +455,12 @@ You should make sure you understand them and how they work; feel free to use any
 ;    without a cond or nested if, but it is also acceptable to break it up into 3 cases.
 
 (define (dubmult X Y)
-    null); replace this null here with the lines of your code
+  (cond
+    [(or (dubzero? X) (dubzero? Y)) dubzero] ; return zero if either input is zero
+    [(double? Y) (double (dubmult X (op Y)))] ; if Y is a D, double the result of X and Y's operand
+    [else (dubplus (double (dubmult X (op Y))) X)] ; if Y is DP1, double result of X and Y's operand and add X 
+    )
+ ); replace this null here with the lines of your code
 
 (display "Question 10 - DubNum Multiply\n")
 (define-test-suite bin-mult-test
