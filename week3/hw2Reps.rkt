@@ -414,7 +414,13 @@ You should make sure you understand them and how they work; feel free to use any
 ; Requirements: be sure to use the functions provided for you in this homework (double, double? etc).
 ; Done correctly, there should be five cases. to be efficient, every recursive call should be of the form (dubplus (op X) (op Y))
 (define (dubplus X Y)
-  
+  (cond
+    [(dubzero? X) Y] ; if X is zero, return Y
+    [(dubzero? Y) X] ; if Y is zero, return X
+    [(and (double? X) (double? Y)) (double (dubplus (op X) (op Y)))] ; if X and Y both start with D, add their operands and double it
+    [(or (double? Y) (double? X)) (inc (double (dubplus (op X) (op Y))))] ; if X xor Y starts with D, add their operands, double it, and add 1
+    [else (inc (inc (double (dubplus (op X) (op Y)))))] ; else, both X and Y are DP1, add operands, double it, and add 2
+    )
 ); replace this null here with the lines of your code
 
 (display "Question 9 - DubNum Plus\n")
