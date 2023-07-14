@@ -131,7 +131,7 @@ remainder etc), then you taking a wrong (and very inefficient) approach to that 
 ;       it is inefficient to do any arithmetic (adding, remaindering) in your implementation
 (define (odd_amt_q? L)
   (cond
-    ; use XOR to toggle boolean output at each q encountered
+    ; use XOR recursively to toggle state of output at each q encountered
     [(null? L) #f] ; if reached an empty list, return false
     [(equal? (first L) 'q) (xor #t (odd_amt_q? (rest L)))] ; if first item is a q, toggle return value
     [else (xor #f (odd_amt_q? (rest L)))] ; if not a q, don't toggle the output state
@@ -271,7 +271,7 @@ lastly, when N is the peano number representing n>0, then (pred N) is the peano 
 (define (sub M N)
   (cond
     [(pzero? N) M] ; if N has reached zero, return M value
-    [(pzero? M) zero] ; if M has reached zero, return zero for failure
+    [(pzero? M) zero] ; if M has reached zero, return zero (meaing m >= n)
     [else (sub (pred M) (pred N))] ; decrement each number and recursively call sub
     )
   ); replace this null here with the lines of your code
@@ -283,7 +283,7 @@ lastly, when N is the peano number representing n>0, then (pred N) is the peano 
 (define (div M N)
   (cond
     [(equal? M N) one] ; If M is equal to N, return pnum of one
-    [(pzero? (sub M N)) zero] ; if M is less than N, return pnum of zero
+    [(pzero? (sub M N)) zero] ; if M <= N, return pnum of zero
     [else (succ (div (sub M N) N))] ; if not, subtract N from N and increment count
   )
 ); replace this null here with the lines of your code
