@@ -1,4 +1,4 @@
-;type your name after the colon:
+;type your name after the colon: Cole Bardin
 
 #lang racket
 (require rackunit)
@@ -31,7 +31,17 @@ assignment.  There are two other questions involving the SAT Solver which is sub
 
 (define/contract (nnf? E)
   (-> legal? boolean?)
-  #f) ; delete this False line and put your implementation here on these lines. do NOT delete the ;end comment after your definition
+  (cond
+    [(is-variable? E) #t] ; lone variables are NNF
+    [(is-constant? E) #t] ; lone constants are NNF
+    [(is-XOR? E) #f] ; XOR not allowed in NFF
+    [(is-IMPLIES? E) #f] ; IMPLIES not allowed in NNF
+    [(is-EQUIV? E) #f] ; EQUIV not allowed in NNF
+    [(is-NOT? E) (is-variable? (second E))] ; NOT can only be applied to a single variable
+    [(is-OR? E) (and (nnf? (second E)) (nnf? (second (rest E))))] ; OR can only be applied to two other NNF expressions
+    [(is-AND? E) (and (nnf? (second E)) (nnf? (second (rest E))))] ; AND can only be applied to two other NNF expressions
+  )
+) ; delete this False line and put your implementation here on these lines. do NOT delete the ;end comment after your definition
   
 
 ; Question 2: write a function according to the specifications below
@@ -48,7 +58,23 @@ assignment.  There are two other questions involving the SAT Solver which is sub
 
 (define/contract (makeNNF E)
   (-> legal? nnf?)
-  'FALSE) ; delete this False line and put your implementation here on these lines. do NOT delete the ;end comment after your definition
+  (cond
+    [(is-variable? E) E] 
+    [(is-constant? E) E] 
+    [(is-XOR? E) (list 'AND (list 'OR (second E) (second (rest E))) (list 'OR (list 'NOT (second E)) (list 'NOT (second (rest E)))))] ; (XOR A B) into (AND (OR A B) (OR (NOT A) (NOT B)))
+    [(is-IMPLIES? E) (makeNNF (list 'OR (list 'NOT (second E)) (second (rest E))))] ; (IMPLIES A B) into (OR (NOT A) B))
+    [(is-EQUIV? E) (makeNNF (list 'AND (list 'OR (list 'NOT (second E)) (second (rest E))) (list 'OR (list 'NOT (second (rest E))) (second E))))] ; (EQUIV A B) into (AND (OR (NOT A) B) (OR (NOT B) A)))
+    [(and (is-NOT? E) (is-variable? (second E))) E] ; (NOT A) into (NOT A) where A is a variable
+    [(and (is-NOT? E) (is-constant? (second E))) (if (equal? (second E) 'TRUE) 'FALSE 'TRUE)] ; (NOT FALSE) to (NOT TRUE) and (NOT TRUE) into (NOT FALSE)
+    [(and (is-NOT? E) (is-XOR? (second E))) (makeNNF (list 'EQUIV (second (second E)) (second (rest (second E)))))] ; (NOT (XOR A B)) into (EQUIV A B)
+    [(and (is-NOT? E) (is-EQUIV? (second E))) (makeNNF (list 'XOR (second (second E)) (second (rest (second E)))))] ; (NOT (EQUIV A B)) into (XOR A B)
+    [(and (is-NOT? E) (is-NOT? (second E))) (makeNNF (second (second E)))] ; (NOT (NOT A)) into A
+    [(and (is-NOT? E) (is-IMPLIES? (second E))) (makeNNF (list 'AND (second (second E)) (list 'NOT (second (rest (second E))))))] ; (NOT (IMPLIES A B) into (AND A (NOT B))
+    [(is-NOT? E) (makeNNF (cons (if (equal? (first (second E)) 'AND) 'OR 'AND) (map (lambda (a) (list 'NOT a)) (rest (second E)))))] ; for (NOT (AND...)) and (NOT (OR...)), flip AND/OR and negate each term
+    [(is-OR? E) (list 'OR (makeNNF (second E)) (makeNNF (second (rest E))))] ; 
+    [(is-AND? E) (list 'AND (makeNNF (second E)) (makeNNF (second (rest E))))] 
+  )
+) ; delete this False line and put your implementation here on these lines. do NOT delete the ;end comment after your definition
 
 ;end
 
