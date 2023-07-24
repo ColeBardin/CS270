@@ -59,11 +59,8 @@ assignment.  There are two other questions involving the SAT Solver which is sub
 (define/contract (makeNNF E)
   (-> legal? nnf?)
   (cond
-    [(is-variable? E) E] 
-    [(is-constant? E) E] 
-    [(is-XOR? E) (list 'AND (list 'OR (second E) (second (rest E))) (list 'OR (list 'NOT (second E)) (list 'NOT (second (rest E)))))] ; (XOR A B) into (AND (OR A B) (OR (NOT A) (NOT B)))
-    [(is-IMPLIES? E) (makeNNF (list 'OR (list 'NOT (second E)) (second (rest E))))] ; (IMPLIES A B) into (OR (NOT A) B))
-    [(is-EQUIV? E) (makeNNF (list 'AND (list 'OR (list 'NOT (second E)) (second (rest E))) (list 'OR (list 'NOT (second (rest E))) (second E))))] ; (EQUIV A B) into (AND (OR (NOT A) B) (OR (NOT B) A)))
+    [(is-variable? E) E] ; Lone variables are in NNF
+    [(is-constant? E) E] ; Lone constants are in NNF
     [(and (is-NOT? E) (is-variable? (second E))) E] ; (NOT A) into (NOT A) where A is a variable
     [(and (is-NOT? E) (is-constant? (second E))) (if (equal? (second E) 'TRUE) 'FALSE 'TRUE)] ; (NOT FALSE) to (NOT TRUE) and (NOT TRUE) into (NOT FALSE)
     [(and (is-NOT? E) (is-XOR? (second E))) (makeNNF (list 'EQUIV (second (second E)) (second (rest (second E)))))] ; (NOT (XOR A B)) into (EQUIV A B)
@@ -71,8 +68,11 @@ assignment.  There are two other questions involving the SAT Solver which is sub
     [(and (is-NOT? E) (is-NOT? (second E))) (makeNNF (second (second E)))] ; (NOT (NOT A)) into A
     [(and (is-NOT? E) (is-IMPLIES? (second E))) (makeNNF (list 'AND (second (second E)) (list 'NOT (second (rest (second E))))))] ; (NOT (IMPLIES A B) into (AND A (NOT B))
     [(is-NOT? E) (makeNNF (cons (if (equal? (first (second E)) 'AND) 'OR 'AND) (map (lambda (a) (list 'NOT a)) (rest (second E)))))] ; for (NOT (AND...)) and (NOT (OR...)), flip AND/OR and negate each term
-    [(is-OR? E) (list 'OR (makeNNF (second E)) (makeNNF (second (rest E))))] ; 
-    [(is-AND? E) (list 'AND (makeNNF (second E)) (makeNNF (second (rest E))))] 
+    [(is-XOR? E) (list 'AND (list 'OR (second E) (second (rest E))) (list 'OR (list 'NOT (second E)) (list 'NOT (second (rest E)))))] ; (XOR A B) into (AND (OR A B) (OR (NOT A) (NOT B)))
+    [(is-IMPLIES? E) (makeNNF (list 'OR (list 'NOT (second E)) (second (rest E))))] ; (IMPLIES A B) into (OR (NOT A) B))
+    [(is-EQUIV? E) (makeNNF (list 'AND (list 'OR (list 'NOT (second E)) (second (rest E))) (list 'OR (list 'NOT (second (rest E))) (second E))))] ; (EQUIV A B) into (AND (OR (NOT A) B) (OR (NOT B) A)))
+    [(is-OR? E) (list 'OR (makeNNF (second E)) (makeNNF (second (rest E))))] ; for OR, call makeNNF on each term being ORd
+    [(is-AND? E) (list 'AND (makeNNF (second E)) (makeNNF (second (rest E))))] ; for AND, call makeNNF on each term being ANDd
   )
 ) ; delete this False line and put your implementation here on these lines. do NOT delete the ;end comment after your definition
 
