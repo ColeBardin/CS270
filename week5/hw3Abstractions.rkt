@@ -193,8 +193,12 @@ assignment.  There are two other questions involving the SAT Solver which is sub
 
 (define/contract (addTerm T P) (-> term? polyList? polyList?)
   (cond
-    [(null?) T]
-    [(equal? (first (first P)) (first T)) (cons addTerm
+    [(null? P) (list T)] ; If P is empty, add term should return the polyList of T
+    [(> (second T) (second (first P))) (cons T P)] ; If reached a term to the power less than T's power, insert T into list
+    [(and (equal? (second (first P)) (second T)) (zero? (+ (first T) (first (first P))))) (rest P)] ; If found matching power and they cancel out, remove term from P
+    [(equal? (second (first P)) (second T)) (cons (list (+ (first T) (first (first P))) (second T)) (rest P))] ; If found matching term and they don't cancel, add their coefficients
+    [else (cons (first P) (addTerm T (rest P)))] ; Else continue searching for matching term
+    
     )
 ) ; delete the null and put your implementation here on these lines. do NOT delete the ;end comment after your definition
   
@@ -214,7 +218,9 @@ assignment.  There are two other questions involving the SAT Solver which is sub
 ; Example: (multTerm '(3 4) '((1 7) (5 2))) would be ((3 11) (15 6))
 ;          since (3x^4)*(x^7+5x^2)=3x^11+15x^6
 (define/contract (multTerm T P) (-> term? polyList? polyList?)
-  null) ; delete the null and put your implementation here on these lines. do NOT delete the ;end comment after your definition
+  ; For each term in P, mulitiple its coefficient with T's coefficient, and add T's power to its power
+  (map (lambda (p) (list (* (first T) (first p)) (+ (second T) (second p)))) P)
+) ; delete the null and put your implementation here on these lines. do NOT delete the ;end comment after your definition
   
 
 ;Test Bed
@@ -233,8 +239,12 @@ assignment.  There are two other questions involving the SAT Solver which is sub
 ; Requirements: this function should be done NONrecursively by using addTerm and multTerm.
 ;          You may make additional helper functions, but no others are actually needed
 
-(define/contract (multPolys P Q) (-> polyList? polyList? polyList?)
-  null) ; delete the null and put your implementation here on these lines. do NOT delete the ;end comment after your definition
+(define (multPolys P Q)
+;(define/contract (multPolys P Q) (-> polyList? polyList? polyList?)
+     ; innermost foldr takes each term in P and multiplies it by Q and appends all the resulting terms together
+     ; outermost foldr takes each of those result terms and uses addTerm to combine like terms
+    (foldr (lambda (a x) (addTerm a x)) null (foldr (lambda (p n) (append (multTerm p Q) n)) null P))
+) ; delete the null and put your implementation here on these lines. do NOT delete the ;end comment after your definition
   
 
 ;Test Bed
