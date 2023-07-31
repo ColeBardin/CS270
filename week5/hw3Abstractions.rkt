@@ -192,7 +192,11 @@ assignment.  There are two other questions involving the SAT Solver which is sub
 ;           since  3x^4+(x^7+5x^4)=x^7+8x^4
 
 (define/contract (addTerm T P) (-> term? polyList? polyList?)
-  null) ; delete the null and put your implementation here on these lines. do NOT delete the ;end comment after your definition
+  (cond
+    [(null?) T]
+    [(equal? (first (first P)) (first T)) (cons addTerm
+    )
+) ; delete the null and put your implementation here on these lines. do NOT delete the ;end comment after your definition
   
 
 ;Test Bed
