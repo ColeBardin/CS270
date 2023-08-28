@@ -1,4 +1,4 @@
-;type your name after the colon:
+;type your name after the colon: Cole Bardin
 
 #lang racket
 (require rackunit)
@@ -42,7 +42,7 @@ more complicated than necessary.  All functions in this homework should be recur
 
 ; Question 1 [10 pts total]:
 ; input contract = L is a list of Boolean constants
-; output contract = (myst L) is equivalent to the proposition stating "L has ____________________"
+; output contract = (myst L) is equivalent to the proposition stating "L has an even number of false booleans"
  
 (define/contract (myst L)
      (-> (listof boolean?) boolean?)
@@ -52,6 +52,10 @@ more complicated than necessary.  All functions in this homework should be recur
 #| part 1a [2 pts]: list below all contractually legal inputs L such that
                     (or (null? (rest (rest L))) (null? (rest (rest (rest L)))))
 
+  Expression above stating that L must have 2 or 3 elements.
+  Only valid inputs with those conditions:
+  '(#t #t), '(#t #f), '(#f #t), '(#f #f)
+  '(#t #t #t), '(#t #t #f), '(#t #f #t), '(#t #f #f), '(#f #t #t), '(#f #t #f), '(#f #f #t), '(#f #f #f)
 
 
 
@@ -61,18 +65,18 @@ more complicated than necessary.  All functions in this homework should be recur
 |#
 (display "Question 1 myst Tests\n")
 (define-test-suite test_myst
-  (test-equal? "" (myst null) 0)
-  (test-equal? "" (myst null) 0)
-  (test-equal? "" (myst null) 0)
-  (test-equal? "" (myst null) 0)
-  (test-equal? "" (myst null) 0)
-  (test-equal? "" (myst null) 0)
-  (test-equal? "" (myst null) 0)
-  (test-equal? "" (myst null) 0)
-  (test-equal? "" (myst null) 0)
-  (test-equal? "" (myst null) 0)
-  (test-equal? "" (myst null) 0)
-  (test-equal? "" (myst null) 0))
+  (test-equal? "" (myst '(#t #t)) #t)
+  (test-equal? "" (myst '(#t #f)) #f)
+  (test-equal? "" (myst '(#f #t)) #f)
+  (test-equal? "" (myst '(#f #f)) #t)
+  (test-equal? "" (myst '(#t #t #t)) #t)
+  (test-equal? "" (myst '(#t #t #f)) #f)
+  (test-equal? "" (myst '(#t #f #t)) #f)
+  (test-equal? "" (myst '(#t #f #f)) #t)
+  (test-equal? "" (myst '(#f #t #t)) #f)
+  (test-equal? "" (myst '(#f #t #f)) #t)
+  (test-equal? "" (myst '(#f #f #t)) #t)
+  (test-equal? "" (myst '(#f #f #f)) #f))
 (define q1b_score (- 12 (run-tests test_myst 'verbose)))
 
 #| part 1c [2 pts]: Fill in the blank in the output contract by conjecturing a result based on your examples.  
@@ -80,21 +84,88 @@ more complicated than necessary.  All functions in this homework should be recur
   your answer here must be correct in order to get any credit for the next part, so you may wish to check your
   conjecture with a TA or the instructor.  Hint: what do all the #t results have in common vs the #f results?
 
-
-
+ok
 
  part 1d [5 pts]: Prove the correctness of the provided implementation.
  In other words, use structural induction to prove the output contract is always met.
  Hint: there will end up being four different cases you need to consider. (Take a peek ahead at Question 3b if
  you are not certain the best way to structure this argument)
 
+Proving that (myst L) returns true if L has an even number of #f elements
+Base cases:
+Even amt of #f:
+(myst '(#t)) premise
+(if (null? '(#t)) #t (equal? (first '(#t)) (myst (rest '(#t))))) apply def of myst
+(if #f #t (equal? (first '(#t)) (myst (rest '(#t))))) eval null?
+(equal? (first '(#t)) (myst (rest '(#t)))) eval if-statement
+(equal? #t (myst '())) eval first and rest
+(equal? #t (if (null? '()) #t (equal? (first '()) (myst (rest '()))))) apply def of myst
+(equal? #t (if #t #t (equal? (first '()) (myst (rest '()))))) eval null?
+(equal? #t #t) eval if-statement
+#t eval equal?
+
+Odd amt of #f:
+(myst '(#t #f)) premise
+(if (null? '(#t #f)) #t (equal? (first '(#t #f)) (myst (rest '(#t #f))))) apply def of myst
+(if #f #t (equal? (first '(#t #f)) (myst (rest '(#t #f))))) eval null?
+(equal? (first '(#t #f)) (myst (rest '(#t #f)))) eval if-statement
+(equal? #t (myst '(#f))) eval first and rest
+(equal? #t (if (null? '(#f)) #t (equal? (first '(#f)) (myst (rest '(#f)))))) apply def of myst
+(equal? #t (if #f #t (equal? (first '(#f)) (myst (rest '(#f)))))) eval null?
+(equal? #t (equal? (first '(#f)) (myst (rest '(#f))))) eval if-statement
+(equal? #t (equal? #f (myst '()))) eval first and rest
+(equal? #t (equal? #f (if (null? '()) #t (equal? (first '()) (myst (rest '())))))) apply def of myst
+(equal? #t (equal? #f (if #t #t (equal? (first '()) (myst (rest '())))))) eval null?
+(equal? #t (equal? #f #t)) eval if-statement
+(equal? #t #f) eval equal?
+#f eval equal?
+
+Inductive Hypothesis:
+let E be a list with even amt of #f and D be a list with odd amt of #f.
+The following assumptions can be made:
+1. (myst E) would return #t
+2. (myst D) would return #f
+
+Leap:
+4 cases to consider:
+1. (myst (cond #f E)) should return #f
+(myst (cond #f E)) premise
+(if (null? (cond #f E)) #t (equal? (first (cond #f E)) (myst (rest (cond #f E))))) apply def of myst
+(if #f #t (equal? (first (cond #f E)) (myst (rest (cond #f E))))) eval null?
+(equal? (first (cond #f E)) (myst (rest (cond #f E))))
+(equal? #f (myst E)) eval first and rest
+(equal? #f #t) invoke assumption 1
+#f eval equal?
 
 
+2. (myst (cond #t E)) should return #t
+(myst (cond #t E)) premise
+(if (null? (cond #t E)) #t (equal? (first (cond #t E)) (myst (rest (cond #t E))))) apply def of myst
+(if #f #t (equal? (first (cond #t E)) (myst (rest (cond #t E))))) eval null?
+(equal? (first (cond #t E)) (myst (rest (cond #t E)))) eval if-statement
+(equal? #t (myst E)) eval first and rest
+(equal? #t #t) invoke assumption 1
+#t eval equal?
 
+3. (myst (cond #f D)) should return #t
+(myst (cond #f D)) premise
+(if (null? (cond #f D)) #t (equal? (first (cond #f D)) (myst (rest (cond #f D))))) apply def of myst
+(if #f #t (equal? (first (cond #f D)) (myst (rest (cond #f D))))) eval null?
+(equal? (first (cond #f D)) (myst (rest (cond #f D)))) eval if-statement
+(equal? #f (myst D)) eval first and rest
+(equal? #f #f) invoke assumption 2
+#t eval equal?
 
+4. (myst (cond #t D)) should return #f
+(myst (cond #t D)) premise
+(if (null? (cond #t D)) #t (equal? (first (cond #t D)) (myst (rest (cond #t D))))) apply def of myst
+(if #f #t (equal? (first (cond #t D)) (myst (rest (cond #t D))))) eval null?
+(equal? (first (cond #t D)) (myst (rest (cond #t D)))) eval if-statement
+(equal? #t (myst D)) eval first and rest
+(equal? #t #f) invoke assumption 2
+#f eval equal?
 
-
-
+The leap has been established, it follows from structural induction that (myst L) returns true if L has an even amount of #f elements.
 
 |#
 ; Question 2: (5 points)
@@ -105,7 +176,8 @@ more complicated than necessary.  All functions in this homework should be recur
 ; Example:  (cubesum 4) would be 100 because of 1 + 8 + 27 + 64
 
 (define (cubesum n)
-  0);Implement Me
+  (if (zero? n) 0 (+ (* n n n) (cubesum (- n 1))))
+  );Implement Me
 
 
 ;Test Bed
@@ -122,10 +194,34 @@ more complicated than necessary.  All functions in this homework should be recur
 Prove by induction that for all nonnegative integers, (cubesum n) = (n^2)*(n+1)^2 /4
 Enter your proof below:
 
+Base case: n = 1, (cubesum 1) should equal 1
+(cubesum 1) premise
+(if (zero? 1) 0 (+ (* 1 1 1) (cubesum (- 1 1)))) apply def of cubesum
+(if #f 0 (+ (* 1 1 1) (cubesum (- 1 1)))) eval zero?
+(+ (* 1 1 1) (cubesum (- 1 1))) eval if-statement
+(+ 1 (cubesum 0)) eval * and -
+(+ 1 (if (zero? 0) 0 (+ (* 0 0 0) (cubesum (- 0 1))))) apply def of cubesu,
+(+ 1 (if #t 0 (+ (* 0 0 0) (cubesum (- 0 1))))) eval zero?
+(+ 1 0) eval if-statement
+1 eval +
 
+The base case has been established.
 
+Inductive hypothesis:
+assume that (cubesum k) = the sum of the first k'th cubes for k>0
 
+Leap:
+If the inductive hypothesis is true, (cubesum (+ k 1)) should equal the sum of the (k+1)th cubes
+Alternatively, (cubesum (+ k 1)) should equal (k+1)*(k+1)*(k+1) + (cubesum k)
+(cubesum (+ k 1)) premise
+(if (zero? (+ k 1)) 0 (+ (* (+ k 1) (+ k 1) (+ k 1)) (cubesum (- (+ k 1) 1)))) apply def of cubesum
+(if #f 0 (+ (* (+ k 1) (+ k 1) (+ k 1)) (cubesum (- (+ k 1) 1)))) eval zero?
+(+ (* (+ k 1) (+ k 1) (+ k 1)) (cubesum (- (+ k 1) 1))) eval if-statement
+(+ (* (+ k 1) (+ k 1) (+ k 1)) (cubesum k)) eval + -
+(k+1)*(k+1)*(k+1) + (cubesum k) convert algebraically
 
+Since (cubesum (+ k 1)) = (k+1)*(k+1)*(k+1) + (cubesum k), the leap has been established.
+It follows from induction that (cubesum n) equals the sum of the first n'th cubes.
 
 |#
 
@@ -134,7 +230,8 @@ Enter your proof below:
 ; Input:  L is a (possibly empty) list of integers.
 ; Output: (evenOnes L) is a boolean value which is true iff the quantity of ones in L is an even amount
 (define (evenOnes L)
-  0);Implement Me
+  (if (null? L) #t (xor (equal? 1 (first L)) (evenOnes (rest L))))
+  );Implement Me
 
 
 ;Test Bed
@@ -161,9 +258,79 @@ Hint for the Leap: you need 4 cases (cons 1 E), (cons x E), (cons 1 D), (cons x 
 Where, x!=1, E is a list with an even number of ones and D is a list with an odd number of ones.
 Enter your proof below:
 
+Base case:
+1. L = '(2) has an even amount of 1's; (evenOnes '(2)) should return #t
+(evenOnes '(2)) premise
+(if (null? '(2)) #t (xor (equal? 1 (first '(2))) (evenOnes (rest '(2))))) apply def of evenOnes
+(if #f #t (xor (equal? 1 (first '(2))) (evenOnes (rest '(2))))) eval null?
+(xor (equal? 1 (first '(2))) (evenOnes (rest '(2)))) eval if-statement
+(xor (equal? 1 2) (evenOnes '())) eval first and rest
+(xor #f (evenOnes '())) eval equal?
+(xor #f (if (null? '()) #t (xor (equal? 1 (first '())) (evenOnes (rest '()))))) apply def of evenOnes
+(xor #f (if #t #t (xor (equal? 1 (first '())) (evenOnes (rest '()))))) eval null?
+(xor #f #t) eval if-statement
+#t eval xor
 
+2. L = '(1) has an odd amount of 1's; (evenOnes '(1)) should return #t
+(evenOnes '(1)) premise
+(if (null? '(1)) #t (xor (equal? 1 (first '(1))) (evenOnes (rest '(1))))) apply def of evenOnes
+(if #f #t (xor (equal? 1 (first '(1))) (evenOnes (rest '(1))))) eval null?
+(xor (equal? 1 (first '(1))) (evenOnes (rest '(1)))) eval if-statement
+(xor (equal? 1 1) (evenOnes '())) eval first and rest
+(xor #t (evenOnes '())) eval equal?
+(xor #t (if (null? '()) #t (xor (equal? 1 (first '())) (evenOnes (rest '()))))) apply def of evenOnes
+(xor #t (if #t #t (xor (equal? 1 (first '())) (evenOnes (rest '()))))) eval null?
+(xor #t #t) eval if-statement
+#f eval xor
 
+Since (evenOnes '(2)) = #t and (evenOnes '(1)) = #f, the base cases has been established
 
+Inductive hypothesis:
+Let E be a list with an even amount of 1's and D be a list with an odd amount of 1's.
+The following assumptions can be made as the inductive hypothesis:
+1. (evenOnes E) = #t
+2. (evenOnes D) = #f
+
+Leap:
+With the assumptions of the IH, 4 cases must be considered:
+1. (evenOnes (cond 1 E)) must equal #f
+(evenOnes (cond 1 E)) premise
+(if (null? (cond 1 E)) #t (xor (equal? 1 (first (cond 1 E))) (evenOnes (rest (cond 1 E))))) apply def of evenOnes
+(if #f #t (xor (equal? 1 (first (cond 1 E))) (evenOnes (rest (cond 1 E))))) eval null?
+(xor (equal? 1 1) (evenOnes E)) eval if-statement
+(xor #t (evenOnes E)) eval equal?
+(xor #t #t) invoke assumption 1
+#f eval xor
+
+2. (evenOnes (cond 0 E)) must equal #t
+(evenOnes (cond 0 E)) premise
+(if (null? (cond 0 E)) #t (xor (equal? 1 (first (cond 0 E))) (evenOnes (rest (cond 0 E))))) apply def of evenOnes
+(if #f #t (xor (equal? 1 (first (cond 0 E))) (evenOnes (rest (cond 0 E))))) eval null?
+(xor (equal? 1 0) (evenOnes E)) eval if-statement
+(xor #f (evenOnes E)) eval equal?
+(xor #f #t) invoke assumption 1
+#t eval xor
+
+3. (evenOnes (cond 1 D)) must equal #t
+(evenOnes (cond 1 D)) premise
+(if (null? (cond 1 D)) #t (xor (equal? 1 (first (cond 1 D))) (evenOnes (rest (cond 1 D))))) apply def of evenOnes
+(if #f #t (xor (equal? 1 (first (cond 1 D))) (evenOnes (rest (cond 1 D))))) eval null?
+(xor (equal? 1 1) (evenOnes D)) eval if-statement
+(xor #t (evenOnes D)) eval equal?
+(xor #t #f) invoke assumption 1
+#t eval xor
+
+4. (evenOnes (cond 0 D)) must equal #f
+(evenOnes (cond 0 D)) premise
+(if (null? (cond 0 D)) #t (xor (equal? 1 (first (cond 0 D))) (evenOnes (rest (cond 0 D))))) apply def of evenOnes
+(if #f #t (xor (equal? 1 (first (cond 0 D))) (evenOnes (rest (cond 0 D))))) eval null?
+(xor (equal? 1 0) (evenOnes D)) eval if-statement
+(xor #f (evenOnes D)) eval equal?
+(xor #f #f) invoke assumption 1
+#f eval xor
+
+Since each of the 4 cases evaluated to the desired result, the leap has been established.
+It follows from induciton that (evenOnes L) = #t if L has an even amount of 1's in it and (evenOnes L) = #f if L has an odd amount of 1's in it.
 
 |#
 
@@ -172,7 +339,8 @@ Enter your proof below:
 ; Input contract:  L a list (possibly empty)
 ; Output contract: (duplicate L) is a new list with two copies of each value consecutively in L
 (define (duplicate L)
-  0);Implement Me
+  (if (null? L) '() (cons (first L) (cons (first L) (duplicate (rest L)))))
+  );Implement Me
 
 
 (display "Question 4 duplicate Tests\n")
@@ -195,10 +363,48 @@ Length Property 2: If a is any object and B is a list
 You may Justify lines by saying "by Length Property 1" or "by Length Property 2"
 Enter your proof below:
 
+Prove: (length (duplicate L)) = 2*n
 
+Base case:
+L = '(1)
+n = (length L) = 1
+2*n = 2
+(length (duplicate L)) should equal 2
+(length (duplicate '(1))) premise
+(length (if (null? '(1)) '() (cons (first '(1)) (cons (first '(1)) (duplicate (rest '(1))))))) apply def of duplicate
+(length (if #f '() (cons (first '(1)) (cons (first '(1)) (duplicate (rest '(1))))))) eval null?
+(length (cons (first '(1)) (cons (first '(1)) (duplicate (rest '(1)))))) eval if-statement
+(length (cons 1 (cons 1 (duplicate '())))) eval first and rest
+(length (cons 1 (cons 1 (if (null? '()) '() (cons (first '()) (cons (first '()) (duplicate (rest '())))))))) apply def of duplicate
+(length (cons 1 (cons 1 (if #t '() (cons (first '()) (cons (first '()) (duplicate (rest '())))))))) eval null?
+(length (cons 1 (cons 1 '()))) eval if-statement
+(+ 1 (+ 1 (length '()))) Length property 2
+1 + 1 + (length '()) Convert algebraically
+2 + 0 Length property 1
+2 algebra
 
+Since (length (duplicate '(1))) = 2, this establishes the base case.
 
+Inductive Hypothesis:
+for K != null:
+1. (length K) = b
+2. (length (duplicate K)) = 2*b
 
+Leap:
+To establish the leap, (length (duplicate (cons x K))) should equal 2*(b+1)
+(length (duplicate (cons x K))) premise
+(length (if (null? (cons x K)) '() (cons (first (cons x K)) (cons (first (cons x K)) (duplicate (rest (cons x K))))))) apply def of duplicate
+(length (if #f '() (cons (first (cons x K)) (cons (first (cons x K)) (duplicate (rest (cons x K))))))) eval null?
+(length (cons (first (cons x K)) (cons (first (cons x K)) (duplicate (rest (cons x K)))))) eval if-statement
+(length (cons x (cons x (duplicate K)))) eval first and rest
+(+ 1 (+ 1 (length (duplicate K))) Length property 2
+(+ 1 (+ 1 2*b)) Invoke IH assumption 2
+2 + 2*b Convert algebraically
+2*(b+1) algebra
+
+Since (length (duplicate (cons x K))) evaluated to 2*(b+1), this establishes the leap.
+
+It follows from induction that (length (duplicate L)) = 2*n where n is the length of L.
 
 |#
 
