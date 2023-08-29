@@ -56,9 +56,7 @@ more complicated than necessary.  All functions in this homework should be recur
   Only valid inputs with those conditions:
   '(#t #t), '(#t #f), '(#f #t), '(#f #f)
   '(#t #t #t), '(#t #t #f), '(#t #f #t), '(#t #f #f), '(#f #t #t), '(#f #t #f), '(#f #f #t), '(#f #f #f)
-
-
-
+  
   part 1b [1 pts]: evaluate the function myst on all of inputs in the previous part and record the results below by
   replacing all the nulls in the unit tests below with your answers to part 1a, and replace all the 0s with
   the actual result.  (if done correctly, you should end up with exactly twelve distinct unit tests)
@@ -128,44 +126,44 @@ The following assumptions can be made:
 
 Leap:
 4 cases to consider:
-1. (myst (cond #f E)) should return #f
-(myst (cond #f E)) premise
-(if (null? (cond #f E)) #t (equal? (first (cond #f E)) (myst (rest (cond #f E))))) apply def of myst
-(if #f #t (equal? (first (cond #f E)) (myst (rest (cond #f E))))) eval null?
-(equal? (first (cond #f E)) (myst (rest (cond #f E))))
+1. (myst (cons #f E)) should return #f
+(myst (cons #f E)) premise
+(if (null? (cons #f E)) #t (equal? (first (cons #f E)) (myst (rest (cons #f E))))) apply def of myst
+(if #f #t (equal? (first (cons #f E)) (myst (rest (cons #f E))))) eval null?
+(equal? (first (cons #f E)) (myst (rest (cons #f E))))
 (equal? #f (myst E)) eval first and rest
 (equal? #f #t) invoke assumption 1
 #f eval equal?
 
 
-2. (myst (cond #t E)) should return #t
-(myst (cond #t E)) premise
-(if (null? (cond #t E)) #t (equal? (first (cond #t E)) (myst (rest (cond #t E))))) apply def of myst
-(if #f #t (equal? (first (cond #t E)) (myst (rest (cond #t E))))) eval null?
-(equal? (first (cond #t E)) (myst (rest (cond #t E)))) eval if-statement
+2. (myst (cons #t E)) should return #t
+(myst (cons #t E)) premise
+(if (null? (cons #t E)) #t (equal? (first (cons #t E)) (myst (rest (cons #t E))))) apply def of myst
+(if #f #t (equal? (first (cons #t E)) (myst (rest (cons #t E))))) eval null?
+(equal? (first (cons #t E)) (myst (rest (cons #t E)))) eval if-statement
 (equal? #t (myst E)) eval first and rest
 (equal? #t #t) invoke assumption 1
 #t eval equal?
 
-3. (myst (cond #f D)) should return #t
-(myst (cond #f D)) premise
-(if (null? (cond #f D)) #t (equal? (first (cond #f D)) (myst (rest (cond #f D))))) apply def of myst
-(if #f #t (equal? (first (cond #f D)) (myst (rest (cond #f D))))) eval null?
-(equal? (first (cond #f D)) (myst (rest (cond #f D)))) eval if-statement
+3. (myst (cons #f D)) should return #t
+(myst (cons #f D)) premise
+(if (null? (cons #f D)) #t (equal? (first (cons #f D)) (myst (rest (cons #f D))))) apply def of myst
+(if #f #t (equal? (first (cons #f D)) (myst (rest (cons #f D))))) eval null?
+(equal? (first (cons #f D)) (myst (rest (cons #f D)))) eval if-statement
 (equal? #f (myst D)) eval first and rest
 (equal? #f #f) invoke assumption 2
 #t eval equal?
 
-4. (myst (cond #t D)) should return #f
-(myst (cond #t D)) premise
-(if (null? (cond #t D)) #t (equal? (first (cond #t D)) (myst (rest (cond #t D))))) apply def of myst
-(if #f #t (equal? (first (cond #t D)) (myst (rest (cond #t D))))) eval null?
-(equal? (first (cond #t D)) (myst (rest (cond #t D)))) eval if-statement
+4. (myst (cons #t D)) should return #f
+(myst (cons #t D)) premise
+(if (null? (cons #t D)) #t (equal? (first (cons #t D)) (myst (rest (cons #t D))))) apply def of myst
+(if #f #t (equal? (first (cons #t D)) (myst (rest (cons #t D))))) eval null?
+(equal? (first (cons #t D)) (myst (rest (cons #t D)))) eval if-statement
 (equal? #t (myst D)) eval first and rest
 (equal? #t #f) invoke assumption 2
 #f eval equal?
 
-The leap has been established, it follows from structural induction that (myst L) returns true if L has an even amount of #f elements.
+The leap has been established. t follows from structural induction that (myst L) returns true if L has an even amount of #f elements.
 
 |#
 ; Question 2: (5 points)
@@ -293,37 +291,37 @@ The following assumptions can be made as the inductive hypothesis:
 
 Leap:
 With the assumptions of the IH, 4 cases must be considered:
-1. (evenOnes (cond 1 E)) must equal #f
-(evenOnes (cond 1 E)) premise
-(if (null? (cond 1 E)) #t (xor (equal? 1 (first (cond 1 E))) (evenOnes (rest (cond 1 E))))) apply def of evenOnes
-(if #f #t (xor (equal? 1 (first (cond 1 E))) (evenOnes (rest (cond 1 E))))) eval null?
+1. (evenOnes (cons 1 E)) must equal #f
+(evenOnes (cons 1 E)) premise
+(if (null? (cons 1 E)) #t (xor (equal? 1 (first (cons 1 E))) (evenOnes (rest (cons 1 E))))) apply def of evenOnes
+(if #f #t (xor (equal? 1 (first (cons 1 E))) (evenOnes (rest (cons 1 E))))) eval null?
 (xor (equal? 1 1) (evenOnes E)) eval if-statement
 (xor #t (evenOnes E)) eval equal?
 (xor #t #t) invoke assumption 1
 #f eval xor
 
-2. (evenOnes (cond 0 E)) must equal #t
-(evenOnes (cond 0 E)) premise
-(if (null? (cond 0 E)) #t (xor (equal? 1 (first (cond 0 E))) (evenOnes (rest (cond 0 E))))) apply def of evenOnes
-(if #f #t (xor (equal? 1 (first (cond 0 E))) (evenOnes (rest (cond 0 E))))) eval null?
+2. (evenOnes (cons 0 E)) must equal #t
+(evenOnes (cons 0 E)) premise
+(if (null? (cons 0 E)) #t (xor (equal? 1 (first (cons 0 E))) (evenOnes (rest (cons 0 E))))) apply def of evenOnes
+(if #f #t (xor (equal? 1 (first (cons 0 E))) (evenOnes (rest (cons 0 E))))) eval null?
 (xor (equal? 1 0) (evenOnes E)) eval if-statement
 (xor #f (evenOnes E)) eval equal?
 (xor #f #t) invoke assumption 1
 #t eval xor
 
-3. (evenOnes (cond 1 D)) must equal #t
-(evenOnes (cond 1 D)) premise
-(if (null? (cond 1 D)) #t (xor (equal? 1 (first (cond 1 D))) (evenOnes (rest (cond 1 D))))) apply def of evenOnes
-(if #f #t (xor (equal? 1 (first (cond 1 D))) (evenOnes (rest (cond 1 D))))) eval null?
+3. (evenOnes (cons 1 D)) must equal #t
+(evenOnes (cons 1 D)) premise
+(if (null? (cons 1 D)) #t (xor (equal? 1 (first (cons 1 D))) (evenOnes (rest (cons 1 D))))) apply def of evenOnes
+(if #f #t (xor (equal? 1 (first (cons 1 D))) (evenOnes (rest (cons 1 D))))) eval null?
 (xor (equal? 1 1) (evenOnes D)) eval if-statement
 (xor #t (evenOnes D)) eval equal?
 (xor #t #f) invoke assumption 1
 #t eval xor
 
-4. (evenOnes (cond 0 D)) must equal #f
-(evenOnes (cond 0 D)) premise
-(if (null? (cond 0 D)) #t (xor (equal? 1 (first (cond 0 D))) (evenOnes (rest (cond 0 D))))) apply def of evenOnes
-(if #f #t (xor (equal? 1 (first (cond 0 D))) (evenOnes (rest (cond 0 D))))) eval null?
+4. (evenOnes (cons 0 D)) must equal #f
+(evenOnes (cons 0 D)) premise
+(if (null? (cons 0 D)) #t (xor (equal? 1 (first (cons 0 D))) (evenOnes (rest (cons 0 D))))) apply def of evenOnes
+(if #f #t (xor (equal? 1 (first (cons 0 D))) (evenOnes (rest (cons 0 D))))) eval null?
 (xor (equal? 1 0) (evenOnes D)) eval if-statement
 (xor #f (evenOnes D)) eval equal?
 (xor #f #f) invoke assumption 1
@@ -413,7 +411,8 @@ It follows from induction that (length (duplicate L)) = 2*n where n is the lengt
 ; Input contract:  L is a non-empty list
 ; Output contract: (dropend L) is the same as L but with last element removed
 (define (dropend L)
-  0); Implement Me
+  (if (null? (rest L)) '() (cons (first L) (dropend (rest L))))
+  ); Implement Me
 
 
 (display "Question 5 dropend Tests\n")
@@ -437,9 +436,39 @@ It follows from induction that (length (duplicate L)) = 2*n where n is the lengt
 ;You may use the properties of length from Question 3
 Enter your proof below:
 
+Base case: L = '(1)
+(length '(1)) = n = 1
+n-1 = 0
+Proof:
+(length (dropend '(1))) premise
+(length (if (null? (rest '(1))) '() (cons (first '(1)) (dropend (rest '(1)))))) apply def of dropend
+(length (if (null? '()) '() (cons 1 (dropend '())))) eval rest and first
+(length (if #t '() (cons 1 (dropend '())))) eval null?
+(length '()) eval if-statement
+0 length property 1
 
+Since (length (dropend '(1))) = 0, the base case has been verified.
 
+Inductive hypothesis:
+Assume that for the non empylist N:
+1. (length N) = b
+2. (length (dropend N)) = b - 1
 
+Leap:
+To establish the leap, (length (dropend (cons x N))) must equal (length N)
+Proof:
+(length (dropend (cons x N))) premise
+(length (if (null? (rest (cons x N))) '() (cons (first (cons x N)) (dropend (rest (cons x N)))))) apply def of dropend
+(length (if (null? N) '() (cons x (dropend N)))) eval first and rest
+(length (if #f '() (cons x (dropend N)))) eval null?
+(length (cons x (dropend N))) eval if-statement
+1 + (length (dropend N)) length property 2
+1 + b - 1 invoke inductive hypothesis assumption 2
+b algebra
+
+Since (length (dropend (cons x N))) = b, this establishes the leap.
+
+It follows from induction that for any non-empy list L with length n, (length (dropend L)) = n - 1.
 
 |#
 
@@ -450,8 +479,10 @@ Enter your proof below:
 ; Example:  (multpairs '(2 5 3 1)) would return '(10 3) since 2*5=10 and 3*1=3
 
 (define (multpairs L)
-  0); Implement Me
+  (if (null? L) '() (cons (* (first L) (first (rest L))) (multpairs (rest (rest L)))))
+  ); Implement Me
 
+; you couldn't be bothered to fix the typo for this unit test.
 
 (display "Question 6 add_pairs Tests\n")
 (define-test-suite test_multpairs
@@ -474,20 +505,45 @@ Prove by Induction that (length (multpairs L)) = n/2
 You may use the properties of length from Question 4
 Enter your proof below:
 
+You should say that for this proof, L has to be a list of pairs of numbers or else this proof is not possible...
 
+Base Case: L = '(1 2).
+(length '(1 2)) = 2
+(length (multpairs '(1 2))) should evaluate to 1
 
+Proof:
+(length (multpairs '(1 2))) premise
+(length (if (null? '(1 2)) '() (cons (* (first '(1 2)) (first (rest '(1 2)))) (multpairs (rest (rest '(1 2))))))) apply def of multpairs
+(length (if #f '() (cons (* (first '(1 2)) (first (rest '(1 2)))) (multpairs (rest (rest '(1 2))))))) eval null?
+(length (cons (* (first '(1 2)) (first (rest '(1 2)))) (multpairs (rest (rest '(1 2)))))) eval if-statement
+(length (cons (* 1 2) (multpairs '()))) eval first and rest
+(length (cons (* 1 2) (if (null? '()) '() (cons (* (first '()) (first (rest '()))) (multpairs (rest (rest '()))))))) apply def of multpairs
+(length (cons (* 1 2) (if #t '() (cons (* (first '()) (first (rest '()))) (multpairs (rest (rest '()))))))) eval null?
+(length (cons (* 1 2) '())) eval if-statement
+(length (cons 2 '())) eval *
+(length '(2)) eval cons
+1 eval length
 
+Since (length (multpairs '(1 2))) = 1 = (length '(1 2)) / 2, the base case has been verified.
 
+Inductive Hypothesis:
+For some non-empy list K with length b, it can be assumed that:
+(length (multpairs K)) = b/2
 
+Leap:
+To establish the leap, (length (multpairs (cons y (cons x K)))) should evaluate to 1 + b/2
+Proof:
+(length (multpairs (cons y (cons x K)))) premise
+(length (if (null? (cons y (cons x K))) '() (cons (* (first (cons y (cons x K))) (first (rest (cons y (cons x K))))) (multpairs (rest (rest (cons y (cons x K)))))))) apply def of multpairs
+(length (if #f '() (cons (* (first (cons y (cons x K))) (first (rest (cons y (cons x K))))) (multpairs (rest (rest (cons y (cons x K)))))))) eval null?
+(length (cons (* (first (cons y (cons x K))) (first (rest (cons y (cons x K))))) (multpairs (rest (rest (cons y (cons x K))))))) eval if-statement
+(length (cons (* y x) (multpairs K)) eval first and rest
+1 + (length (multpairs K)) length property 2
+1 + b/2 invoke IH
 
+Since (length (multpairs (cons y (cons x K)))) evaluated to 1 + b/2, the leap has been established.
 
-
-
-
-
-
-
-
+It follows from induction that for any non-empty list L with length n, (length (multpairs L)) = n/2.
 
 Question7: the stamp line
 Part1A asks you to implement a function, and Part1B asks you to use induction to prove
@@ -525,9 +581,15 @@ Further examples can be seen in the unit tests. |#
 ; Example: (stampLine 4) would be the list (0 1 1 0 1), since the 101 from list#3 would
 ; turn into 1->01, 0->1, 1->01
 
+; Helper function I wrote to do the stamping and appending 0 actions to a list
+(define/contract (doStamp L)
+  (-> list? list?)
+  (if (null? L) '() (if (zero? (first L)) (cons 1 (doStamp (rest L))) (cons 0 (cons 1 (doStamp (rest L))))))
+)
 ;Question 7A [10 points]: implementing stampLine
 (define (stampLine n)
-  0) ; put your code here
+  (if (zero? n) '(0) (doStamp (stampLine (- n 1))))
+) ; put your code here
 
 
 #|
@@ -541,15 +603,124 @@ Further examples can be seen in the unit tests. |#
  Recommendation: the proofs go a lot quicker if you first establish lemmas about the values of
  (stampLine 0) and (stampLine 1)
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Lemmas:
+1. n = 0
+(stampLine 0) premise
+(if (zero? 0) '(0) (doStamp (stampLine (- 0 1)))) apply def of stampLine
+(if #t '(0) (doStamp (stampLine (- 0 1)))) eval zero?
+'(0) eval if-statement
 
+2. n = 1
+(stampLine 1) premise
+(if (zero? 1) '(0) (doStamp (stampLine (- 1 1)))) apply def of stampLine
+(if #f '(0) (doStamp (stampLine (- 1 1)))) eval zero?
+(doStamp (stampLine (- 1 1))) eval if-statement
+(doStamp (stampLine 0)) eval -
+(doStamp (if (zero? 0) '(0) (doStamp (stampLine (- 0 1))))) apply def of stampLine
+(doStamp (if #t '(0) (doStamp (stampLine (- 0 1))))) eval zero?
+(doStamp '(0)) eval if-statement
+(if (null? '(0)) '() (if (zero? (first '(0))) (cons 1 (doStamp (rest '(0)))) (cons 0 (cons 1 (doStamp (rest '(0))))))) apply def of doStamp
+(if #f '() (if (zero? (first '(0))) (cons 1 (doStamp (rest '(0)))) (cons 0 (cons 1 (doStamp (rest '(0))))))) eval null?
+(if (zero? (first '(0))) (cons 1 (doStamp (rest '(0)))) (cons 0 (cons 1 (doStamp (rest '(0)))))) eval if-statement
+(if (zero? 0) (cons 1 (doStamp '())) (cons 0 (cons 1 (doStamp '())))) eval first and rest
+(if #t (cons 1 (doStamp '())) (cons 0 (cons 1 (doStamp '())))) eval zero?
+(cons 1 (doStamp '())) eval if-statement
+(cons 1 (if (null? '()) '() (if (zero? (first '())) (cons 1 (doStamp (rest '()))) (cons 0 (cons 1 (doStamp (rest '()))))))) apply def of doStamp
+(cons 1 (if #t '() (if (zero? (first '())) (cons 1 (doStamp (rest '()))) (cons 0 (cons 1 (doStamp (rest '()))))))) eval null?
+(cons 1 '()) eval if-statement
+'(1) eval cons
 
+3. (stampLine (+ y 1)) = (doStamp (stampLine y)) for y >= 0
+Base case: y = 0
+RHS:
+(doStamp (stampLine 0)) premise
 
+LHS:
+(stampLine (+ 0 1)) premise
+(if (zero? (+ 0 1)) '(0) (doStamp (stampLine (- (+ 0 1) 1)))) apply def of stampLine
+(if (zero? 1) '(0) (doStamp (stampLine 0))) eval + -
+(if #f '(0) (doStamp (stampLine 0))) eval zero?
+(doStamp (stampLine 0))
 
+Since LHS = RHS, base case has been verified.
 
+Inductive Hypothesis:
+For x > 0, assume:
+(stampLine (+ x 1)) = (doStamp (stampLine x))
 
+Leap:
+Prove: (stampLine (+ (+ x 1) 1))) = (doStamp (stampLine (+ x 1)))
+RHS:
+(doStamp (stampLine (+ x 1))) premise
 
+LHS:
+(stampLine (+ (+ x 1) 1))) premise
+(stampLine (+ x 2)) eval +
+(if (zero? (+ x 2)) '(0) (doStamp (stampLine (- (+ x 2) 1)))) apply def of stampLine
+(if #f '(0) (doStamp (stampLine (- (+ x 2) 1)))) eval zero?
+(doStamp (stampLine (- (+ x 2) 1))) eval if-statement
+(doStamp (stampLine (+ x 1))) eval + -
 
+Since RHS = LHS, this establishes the leap.
 
+It follows from induction that for any y>=0, (stampLine (+ y 1)) = (doStamp (stampLine y))
+
+END OF LEMMAS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Base Case:
+n = 2
+Prove: (stampLine 2) = (append (stampLine 0) (stampLine 1))
+RHS:
+(append (stampLine 0) (stampLine 1)) premise
+(append '(0) '(1)) apply lemmas 1 and 2
+'(0 1) eval append
+
+LHS:
+(stampLine 2) premise
+(if (zero? 2) '(0) (doStamp (stampLine (- 2 1)))) appy def of stampLine
+(if #f '(0) (doStamp (stampLine (- 2 1)))) eval zero?
+(doStamp (stampLine (- 2 1))) eval if-statement
+(doStamp (stampLine 1)) eval -
+(doStamp '(1)) apply lemmas 2
+(if (null? '(1)) '() (if (zero? (first '(1))) (cons 1 (doStamp (rest '(1)))) (cons 0 (cons 1 (doStamp (rest '(1))))))) apply def of doStamp
+(if #f '() (if (zero? (first '(1))) (cons 1 (doStamp (rest '(1)))) (cons 0 (cons 1 (doStamp (rest '(1))))))) eval null?
+(if (zero? (first '(1))) (cons 1 (doStamp (rest '(1)))) (cons 0 (cons 1 (doStamp (rest '(1)))))) eval if-statement
+(if (zero? 1) (cons 1 (doStamp '()) (cons 0 (cons 1 (doStamp '()))) eval first and rest
+(if #f (cons 1 (doStamp '()) (cons 0 (cons 1 (doStamp '()))) eval zero?
+(cons 0 (cons 1 (doStamp '())) eval if-statement
+(cons 0 (cons 1 (if (null? '()) '() (if (zero? (first '())) (cons 1 (doStamp (rest '()))) (cons 0 (cons 1 (doStamp (rest '())))))))) apply def of doStamp
+(cons 0 (cons 1 (if #f '() (if (zero? (first '())) (cons 1 (doStamp (rest '()))) (cons 0 (cons 1 (doStamp (rest '())))))))) eval null?
+(cons 0 (cons 1 '())) eval if-statement
+'(0 1) eval cons
+
+Since the LHS equals the RHS, the base case is verified.
+
+Inductive Hypothesis:
+For any x>=2, assume:
+1. (stampLine x) = (append (stampline (- x 2)) (stampLine (- x 1)))
+
+Leap:
+Prove that (stampLine (+ x 1)) = (append (stampLine (- (+ x 1) 2)) (stampLine (- (+ x 1) 1)))
+
+RHS:
+(append (stampLine (- (+ x 1) 2)) (stampLine (- (+ x 1) 1))) premise
+(append (stampLine (- x 1)) (stampLine x)) eval + -
+
+LHS:
+(stampLine (+ x 1)) premise
+(if (zero? (+ x 1)) '(0) (doStamp (stampLine (- (+ x 1) 1)))) apply def of stampLine
+(if (#f '(0) (doStamp (stampLine (- (+ x 1) 1)))) eval zero?
+(doStamp (stampLine (- (+ x 1) 1))) eval if-statement
+(doStamp (stampLine x)) eval + -
+(doStamp (append (stampline (- x 2)) (stampLine (- x 1)))) invoke IH
+(append (doStamp (stampline (- x 2))) (doStamp (stampLine (- x 1))))) Distribute linear doStamp func
+(append (stampLine (+ (- x 2) 1)) (stampLine (+ (- x 1) 1))) apply lemmas 3
+(append (stampLine (- x 1)) (stampLine x)) eval + -
+
+Since RHS = LHS, the leap has been established.
+It follows from induction that for all n>=2, (stampLine n) = (append (stampLine (- n 2)) (stampLine (- n 1))).
 
 Question 8: Triads
 There is nothing for you to implement for this question; all the code you need is provided.
@@ -628,18 +799,80 @@ note that in future courses, the proofs may be formal and stated 100% in code, l
 (implies (triad? L) (zero? (remainder (+ (first L)(first(rest L))(first(rest(rest L)))) 7))
 But we're not going to do that in cs270
 
+Prove: (remainder (+ (first L) (first (rest L)) (first (rest (rest L)))) 7) = 0
+Base cases:
+1. L = (8 4 9)
+Prove: (remainder (+ (first (8 4 9)) (first (rest (8 4 9))) (first (rest (rest (8 4 9))))) 7) = 0
+LHS:
+(remainder (+ (first (8 4 9)) (first (rest (8 4 9))) (first (rest (rest (8 4 9))))) 7) premise
+(remainder (+ 8 4 9) 7) eval first and rest
+(remainder 21 7) eval +
+0 eval remainder
 
+Since the LHS = RHS, this base case has been established for L = (8 4 9)
 
+2. L = (13 14 15)
+Prove: (remainder (+ (first (13 14 15)) (first (rest (13 14 15))) (first (rest (rest (13 14 15))))) 7) = 0
+LHS:
+(remainder (+ (first (13 14 15)) (first (rest (13 14 15))) (first (rest (rest (13 14 15))))) 7) premise
+(remainder (+ 13 14 15) 7) eval first and rest
+(remainder 42 7) eval +
+0 eval remainder
 
+Since the LHS = RHS, this base case has been established for L = (13 14 15)
 
+3. Mix triad
+
+Inductive Hypothesis:
+For some triad T = (a b c):
+(remainder (+ (first T) (first (rest T)) (first (rest (rest T)))) 7) = 0
+Or in other words: (remainder (+ a b c) 7) = 0
+
+Leap:
+For some triad M = (mix T),
+Let M = '(x y z) and by definition of mix:
+x = b + c + 2 = (+ b c 2)
+y = a + c + 3 = (+ a c 3)
+z = a + b + 2 = (+ a b 2)
+
+Prove: (remainder (+ (first '(x y z)) (first (rest '(x y z))) (first (rest (rest '(x y z))))) 7) = 0
+LHS:
+(remainder (+ (first '(x y z)) (first (rest '(x y z))) (first (rest (rest '(x y z))))) 7) premise
+(remainder (+ x y z) 7) eval first and rest
+(remainder (+ (+ b c 2) (+ a c 3) (+ a b 2)) 7) plug in values of x, y, & z
+(remainder (+ b c 2 a c 3 a b 2) 7) associative property
+(remainder (+ b c a c a b 7) 7) communitive property
+(remainder (+ (+ a b c) (+ a b c) 7)) 7) associative property
+(+ (remainder (+ a b c) 7) (remainder (+ a b c) 7) (remainder 7 7)) remainder property
+(+ 0 0 (remainder 7 7)) invoke IH
+(+ 0 0 0) eval remainder
+0 eval +
+
+Since the LHS evaluated to the RHS, the leap has been established.
+
+It follows from induction that for any triad L, (remainder (+ (first L) (first (rest L)) (first (rest (rest L)))) 7) = 0
 
 Part8B [10pts]: If (remainder(+(first L)(first(rest L))(first(rest(rest L)))) 7)=0, then L is a triad.
 [in plain English: "if three numbers sum to a multiple of 7, then they form a Triad"]
 
+This is not provable and therefore is false.
+Proof by counter example:
 
+Assume if (remainder (+ (first L) (first (rest L)) (first (rest (rest L)))) 7) = 0, then L is a triad.
 
+For N = '(1 2 4), prove: (remainder (+ (first N) (first (rest N)) (first (rest (rest N)))) 7) = 0
+LHS:
+(remainder (+ (first '(1 2 4)) (first (rest '(1 2 4))) (first (rest (rest '(1 2 4))))) 7) premise
+(remainder (+ 1 2 4) 7) eval first and rest
+(remainder 7 7) eval +
+0 eval remainder
 
+Since LHS = RHS, this makes the statement (remainder (+ (first N) (first (rest N)) (first (rest (rest N)))) 7) = 0 true.
 
+From the assumption that for any L, if (remainder (+ (first L) (first (rest L)) (first (rest (rest L)))) 7) = 0, then L is a triad, this would prove that N is a triad.
+
+However, L != (8 4 9) & L != (13 14 15) & L != (mix Triad), there is a contradiciton that follows from the assumption.
+Therefore, the assumption is false by proof of counter example.
 
 |#
 (display "Question 7 stampLine: 10 tests\n")
